@@ -1,6 +1,7 @@
 from sqlalchemy.orm import sessionmaker
 import sqlalchemy as sa
 from DB.datamodel import Operator, Orders, OrderDetail
+from pubsub import pub
 
 engine = sa.create_engine('sqlite:///kompresory.db')
 Session = sessionmaker()
@@ -21,6 +22,7 @@ def add_new_record_into_all_tables(
             .one_or_none()
     )
     if name1 is not None:
+
         print("Alerady exist")
     else:
         name = Operator(name=operator_name)
@@ -54,9 +56,9 @@ def add_new_record_into_all_tables(
     session.commit()
 
 
-test = add_new_record_into_all_tables('Poc', 1, 'ZW 666', '22 WEd', 'Test comment', '111A',
-                               'S375', 'blacha')
-print(test)
+# # test = add_new_record_into_all_tables('Poc', 1, 'ZW 666', '22 WEd', 'Test comment', '111A',
+# #                                'S375', 'blacha')
+# print(test)
 
 def create_new_operator(name):
     # c1 = Operator(name=name)
@@ -68,11 +70,12 @@ def create_new_operator(name):
             .one_or_none()
     )
     if name1 is not None:
-        print("Alerady exist")
+        pub.sendMessage('user exist', msg='User already exist')
     else:
         name = Operator(name=name)
         session.add(name)
     session.commit()
+    pub.sendMessage('user exist', msg='User created successfully')
 
 
 #create_new_operator('Jarek')

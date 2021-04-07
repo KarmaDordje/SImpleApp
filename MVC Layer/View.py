@@ -1,5 +1,5 @@
 import wx
-
+from pubsub import pub
 
 ID_EXIT = 100
 ID_CREATE_NEW_FILE = 200
@@ -7,6 +7,9 @@ ID_CREATE_NEW_RECORD = 300
 ID_DESTROY_WINDOW = 400
 ID_ADD_NEW_USER = 500
 PROGECT_PATH = '/home/saszka/PycharmProjects/SimpleApp/'
+
+
+
 class MainWindow(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent, size=(600, 400))
@@ -62,14 +65,14 @@ class MainWindow(wx.Frame):
 
     def CreateNewFIle(self, event):
         title = 'Create new record'
-        create_window = CreateNewRecord(parent=None, id=ID_CREATE_NEW_FILE)
+        create_window = CreateNewRecord(parent=None)#, id=ID_CREATE_NEW_FILE)
         create_window.Show()
 
     def FindFile(self, e):
         pass
 
     def AddNewUser(self, e):
-        add_new_user = AddNewOperator(parent=None, id=ID_ADD_NEW_USER)
+        add_new_user = AddNewOperator(parent=None)
         add_new_user.Show()
     @staticmethod
     def main():
@@ -81,8 +84,8 @@ class MainWindow(wx.Frame):
 
 class CreateNewRecord(wx.Frame):
 
-    def __init__(self, parent, id):
-        wx.Frame.__init__(self, parent, id, 'Create new record', size=(1000, 440))
+    def __init__(self, parent):
+        wx.Frame.__init__(self, parent, size=(1000, 440))
         wx.Frame.CenterOnScreen(self)
 
         self.InitUI()
@@ -158,41 +161,80 @@ class CreateNewRecord(wx.Frame):
         self.Destroy()
 
 class AddNewOperator(wx.Frame):
-    def __init__(self, parent, id):
-        wx.Frame.__init__(self, parent, id, 'Add new record', size=(250, 150))
+    def __init__(self, parent):
+        wx.Frame.__init__(self, parent, size=(250, 150))
         wx.Frame.CenterOnScreen(self)
         #self.controller = controller
         self.InitUI()
         self.Centre()
+        pub.subscribe(self.user_already_exist, 'user exist')
+
 
     def InitUI(self):
 
+        # self.panel = wx.Panel(self)
+        # vbox = wx.BoxSizer(wx.VERTICAL)
+        # hbox1 = wx.BoxSizer(wx.HORIZONTAL)
+        # st1 = wx.StaticText(self.panel, label='New user name')
+        # hbox1.Add(st1, flag=wx.EXPAND, border=10)
+        # vbox.Add(hbox1, flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border=10)
+        #
+        # vbox.Add(-1, 10)
+        # hbox3 = wx.BoxSizer(wx.HORIZONTAL)
+        # self.tc = wx.TextCtrl(self.panel)
+        # hbox3.Add(self.tc, flag=wx.EXPAND, proportion=1)
+        # vbox.Add(hbox1, flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border=10)
+        #
+        # vbox.Add(-2, 10)
+        # hbox2 = wx.BoxSizer(wx.HORIZONTAL)
+        # btn1 = wx.Button(self.panel, label='Create', size=(70, 30))
+        # hbox2.Add(btn1)
+        # btn2 = wx.Button(self.panel, label='Cancal', size=(70,30))
+        # hbox2.Add(btn2, flag=wx.LEFT|wx.BOTTOM, border=5)
+        # vbox.Add(hbox2, flag=wx.ALIGN_CENTER|wx.RIGHT, border=10)
+        # self.panel.SetSizer(vbox)
+
         panel = wx.Panel(self)
-        vbox = wx.BoxSizer(wx.VERTICAL)
-        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
-        st1 = wx.StaticText(panel, label='New user name')
-        hbox1.Add(st1, flag=wx.RIGHT, border=8)
-        self.tc = wx.TextCtrl(panel)
-        hbox1.Add(self.tc, proportion=1)
-        vbox.Add(hbox1, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-        vbox.Add(-1, 10)
-        hbox2 = wx.BoxSizer(wx.HORIZONTAL)
-        btn1 = wx.Button(panel, label='Create', size=(70,30))
-        hbox2.Add(btn1)
-        btn2 = wx.Button(panel, label='Cancal', size=(70,30))
-        hbox2.Add(btn2, flag=wx.LEFT|wx.BOTTOM, border=5)
-        vbox.Add(hbox2, flag=wx.ALIGN_CENTER|wx.RIGHT, border=10)
-        panel.SetSizer(vbox)
+
+        hbox = wx.BoxSizer(wx.HORIZONTAL)
+
+        fgs = wx.FlexGridSizer(3, 2, 9, 25)
+
+        title = wx.StaticText(panel, label="Add new user")
+        self.status = wx.StaticText(panel, label="")
+
+
+        self.tc1 = wx.TextCtrl(panel)
+
+        btn1 = wx.Button(panel, label='Create', size=(70, 30))
+        btn2 = wx.Button(panel, label='Cancal', size=(70, 30))
+
+        fgs.AddMany([(title), (self.tc1, 1, wx.EXPAND),
+                     btn1, btn2, (self.status, 1, wx.ALIGN_CENTER)])
+
+        fgs.AddGrowableRow(2, 1)
+        fgs.AddGrowableCol(1, 1)
+
+        hbox.Add(fgs, proportion=1, flag=wx.ALL | wx.EXPAND, border=10)
+        panel.SetSizer(hbox)
 
         self.Bind(wx.EVT_BUTTON, self.OnCreate, btn1, id=ID_ADD_NEW_USER)
         self.Bind(wx.EVT_BUTTON, self.OnDestroyAddNewUser, btn2,id=ID_DESTROY_WINDOW)
 
+
     def OnCreate(self, e):
-        text = self.tc.GetLineText(0)
-        #self.controller.on_button_add_new_user_click(text)
+        text = self.tc1.GetValue()
+
+        pub.sendMessage('my_topic', arg=text)
+
+    def user_already_exist(self, msg):
+        self.status.SetLabel(msg)
+
+
+
 
     def OnDestroyAddNewUser(self, e):
-        self.Destroy()
+        self.Close()
 
 if __name__ == '__main__':
     MainWindow.main()
