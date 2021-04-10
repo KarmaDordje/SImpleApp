@@ -11,11 +11,13 @@ session = Session()
 '''
 --------------> SECTION INSERT DATA INTO DB <----------------------
 '''
+
+
 def add_new_record_into_all_tables(
         operator_name,
-        operator_id,order_name, project_name, comment,
+        operator_id, order_name, project_name, comment,
         name_of_drowing, material, type_of_detail
-        ):
+):
     name1 = (
         session.query(Operator)
             .filter(Operator.name == operator_name)
@@ -42,8 +44,8 @@ def add_new_record_into_all_tables(
 
     new_order_details = (
         session.query(OrderDetail)
-            .filter(OrderDetail.name_of_drowing == name_of_drowing)
-            .one_or_none()
+               .filter(OrderDetail.name_of_drowing == name_of_drowing)
+               .one_or_none()
     )
     if new_order_details is None:
         ins = OrderDetail(
@@ -78,7 +80,7 @@ def create_new_operator(name):
     pub.sendMessage('user exist', msg='User created successfully')
 
 
-#create_new_operator('Jarek')
+# create_new_operator('Jarek')
 # exists = session.query(Operator.name).filter_by(name='Jarek').first() is not None
 # print(exists)
 
@@ -131,7 +133,7 @@ def create_new_orders_detail(name_of_drowing, material, type_of_detail):
     session.commit()
 
 
-#create_new_orders_detail('654-025-111-200', 'S355', 'Kostka')
+# create_new_orders_detail('654-025-111-200', 'S355', 'Kostka')
 '''
 ------------------> SECTION READ DATA FROM DB <----------------
 '''
@@ -143,12 +145,13 @@ def get_operator(session):
 
 def get_orders_by_operator(name_of_operator):
     query = session.query(
-            Operator.name,
-            Orders.order_name,
-            Orders.project_name
-        )
+        Operator.name,
+        Orders.order_name,
+        Orders.project_name
+    )
     join_query = query.join(Orders)
     return join_query.filter(Operator.name == name_of_operator).all()
+
 
 # a = get_orders_by_operator('Piotr')
 # print(a)

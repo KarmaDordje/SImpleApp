@@ -1,9 +1,8 @@
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy import MetaData
-import sqlalchemy as sa
 
 Base = declarative_base()
 engine = create_engine('sqlite:///kompresory.db')

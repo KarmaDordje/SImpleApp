@@ -1,4 +1,6 @@
 from DB import db_helper
+
+
 class Model:
 
     @staticmethod

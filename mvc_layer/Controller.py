@@ -1,7 +1,8 @@
-from View import MainWindow,AddNewOperator
-from Model import Model
+from mvc_layer.View import MainWindow, AddNewOperator
+from mvc_layer.Model import Model
 from pubsub import pub
 import wx
+
 
 class ApplicationController:
     def __init__(self):
@@ -10,7 +11,6 @@ class ApplicationController:
         self.model = Model()
         pub.subscribe(self.on_button_add_new_user_click, 'my_topic')
         pub.subscribe(self.snoop, pub.ALL_TOPICS)
-
 
     def main(self):
         self.main_window_view.main()
@@ -25,14 +25,10 @@ class ApplicationController:
         print(f'Controller get {arg}')
 
 
-
-
-
 if __name__ == '__main__':
     app = wx.App()
     main_window = ApplicationController()
     main_window.main()
-
 
 
 # insert into orders values (null, 3, 'ZW 58', '22Wed');
@@ -46,4 +42,3 @@ if __name__ == '__main__':
 # insert into operator values (null, 'Piotr Tokarka');
 # insert into operator values (null, 'Junior');
 # insert into operator values (null, 'Ruslan');
-

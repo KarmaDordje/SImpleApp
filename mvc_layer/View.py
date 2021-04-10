@@ -9,7 +9,6 @@ ID_ADD_NEW_USER = 500
 PROGECT_PATH = '/home/saszka/PycharmProjects/SimpleApp/'
 
 
-
 class MainWindow(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent, size=(600, 400))
@@ -221,7 +220,6 @@ class AddNewOperator(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.OnCreate, btn1, id=ID_ADD_NEW_USER)
         self.Bind(wx.EVT_BUTTON, self.OnDestroyAddNewUser, btn2,id=ID_DESTROY_WINDOW)
 
-
     def OnCreate(self, e):
         text = self.tc1.GetValue()
 
@@ -230,11 +228,9 @@ class AddNewOperator(wx.Frame):
     def user_already_exist(self, msg):
         self.status.SetLabel(msg)
 
-
-
-
     def OnDestroyAddNewUser(self, e):
         self.Close()
+
 
 if __name__ == '__main__':
     MainWindow.main()
