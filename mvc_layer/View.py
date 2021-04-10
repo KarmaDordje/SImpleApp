@@ -1,3 +1,5 @@
+import os
+
 import wx
 from pubsub import pub
 
@@ -6,7 +8,7 @@ ID_CREATE_NEW_FILE = 200
 ID_CREATE_NEW_RECORD = 300
 ID_DESTROY_WINDOW = 400
 ID_ADD_NEW_USER = 500
-PROGECT_PATH = '/home/saszka/PycharmProjects/SimpleApp/'
+PROGECT_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 
 class MainWindow(wx.Frame):
