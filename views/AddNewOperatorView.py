@@ -6,7 +6,6 @@ class AddNewOperator(wx.Frame):
     def __init__(self, parent, id):
         wx.Frame.__init__(self, parent, id, size=(250, 150))
         wx.Frame.CenterOnScreen(self)
-        #self.controller = controller
         self.InitUI()
         self.Centre()
         pub.subscribe(self.user_already_exist, 'user exist')
@@ -37,14 +36,16 @@ class AddNewOperator(wx.Frame):
         hbox.Add(fgs, proportion=1, flag=wx.ALL | wx.EXPAND, border=10)
         panel.SetSizer(hbox)
 
+        self.Bind(wx.EVT_BUTTON, self.OnCreate, btn1)
+        self.Bind(wx.EVT_BUTTON, self.OnDestroy, btn2)
 
     def OnCreate(self, e):
         text = self.tc1.GetValue()
-
         pub.sendMessage('my_topic', arg=text)
+        print(text)
 
     def user_already_exist(self, msg):
         self.status.SetLabel(msg)
 
-    def OnDestroyAddNewUser(self, e):
-        self.Close()
+    def OnDestroy(self, e):
+        self.Destroy()

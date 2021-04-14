@@ -1,10 +1,14 @@
 import wx
+import constants as con
+from controllers.CreateNewOrderController import CreateNewOrderController
+
 
 class CreateNewOrderView(wx.Frame):
 
     def __init__(self, parent, id):
         wx.Frame.__init__(self, parent, id, size=(1000, 440))
         wx.Frame.CenterOnScreen(self)
+        self.create_new_order_controller = CreateNewOrderController()
 
         self.InitUI()
         self.Centre()
@@ -59,7 +63,7 @@ class CreateNewOrderView(wx.Frame):
         hbox5 = wx.BoxSizer(wx.HORIZONTAL)
         create_new_record_button = wx.Button(panel, label='Create', size=(70, 30))
         hbox5.Add(create_new_record_button)
-        cancel_button = wx.Button(panel, label='Close', size=(70, 30))
+        cancel_button = wx.Button(panel, wx.ID_CLOSE, label='Close', size=(70, 30))
         hbox5.Add(cancel_button, flag=wx.LEFT | wx.BOTTOM, border=5)
         vbox.Add(hbox5, flag=wx.ALIGN_RIGHT | wx.RIGHT, border=10)
 
@@ -69,11 +73,11 @@ class CreateNewOrderView(wx.Frame):
         # ------------> BINDING <------------------
         '''
 
-        # self.Bind(wx.EVT_BUTTON, create_new_record_button, self.AddNewRecord, id=ID_CREATE_NEW_RECORD)
-        # self.Bind(wx.EVT_BUTTON, self.OnDestroyNewWindow, cancel_button, id=ID_DESTROY_WINDOW)
-
-    def AddNewRecord(self):
-        pass
+        #self.Bind(wx.EVT_BUTTON, create_new_record_button, self.AddNewRecord, id=con.ID_CREATE_NEW_FILE)
+        self.Bind(wx.EVT_BUTTON, self.OnDestroyNewWindow, cancel_button)
 
     def OnDestroyNewWindow(self, e):
         self.Destroy()
+
+    def AddNewRecord(self, e):
+        pass

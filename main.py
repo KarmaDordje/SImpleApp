@@ -1,4 +1,4 @@
-from controllers.main_controller import ApplicationController
+from controllers.MainController import ApplicationController
 import wx
 
 if __name__ == '__main__':

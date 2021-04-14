@@ -1,9 +1,9 @@
-from views.main_view import MainWindow, AddNewOperator
+from views.MainView import MainWindow
 from mvc_layer.Model import Model
 from pubsub import pub
-from views.toolbar import MainToolbarView
-from views.main_munebar_view import MainManuBarView
-from views.add_new_operator_view import AddNewOperator
+from db.datamodel import Operator
+from controllers.AddNewOperatorController import AddNewOperatorController
+from views.AddNewOperatorView import AddNewOperator
 import constants as con
 import wx
 
@@ -11,13 +11,12 @@ import wx
 class ApplicationController:
     def __init__(self):
         self.main_window_view = MainWindow(parent=None)
-        self.add_new_user_view = AddNewOperator(parent=None, id=wx.ID_ANY)
         self.model = Model()
-
+        self.operator = Operator()
+        self.new_operator = AddNewOperatorController()
         # self.main_window_view.Bind(wx.EVT_TOOL, self.test, id=wx.ID_ANY)
-
-        pub.subscribe(self.on_button_add_new_user_click, 'my_topic')
-        pub.subscribe(self.snoop, pub.ALL_TOPICS)
+        # pub.subscribe(self.on_button_add_new_user_click, 'my_topic')
+        # pub.subscribe(self.snoop, pub.ALL_TOPICS)
 
     def main(self):
         self.main_window_view.main()
@@ -38,19 +37,9 @@ class ApplicationController:
     # def OnQuit(self, e):
     #     self.main_window_view.Close()
 
-    def snoop(topicObj=pub.AUTO_TOPIC, **mesgData):
-        print('topic "%s": %s' % (topicObj.on_button_add_new_user_click, mesgData))
-
-    def on_button_add_new_user_click(self, arg):
-        self.model.add_new_operator(arg)
-
-        print(f'Controller get {arg}')
 
 
-if __name__ == '__main__':
-    app = wx.App()
-    main_window = ApplicationController()
-    main_window.main()
+
 
 
 # insert into orders values (null, 3, 'ZW 58', '22Wed');
