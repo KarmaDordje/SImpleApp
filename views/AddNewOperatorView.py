@@ -42,8 +42,10 @@ class AddNewOperator(wx.Frame):
     def OnCreate(self, e):
         text = self.tc1.GetValue()
         pub.sendMessage('my_topic', arg=text)
-        print(text)
-
+        self.tc1.Clear()
+        wx.MessageBox('Operator added', 'Info',
+                      wx.OK | wx.ICON_INFORMATION)
+        self.OnDestroy(self)
     def user_already_exist(self, msg):
         self.status.SetLabel(msg)
 

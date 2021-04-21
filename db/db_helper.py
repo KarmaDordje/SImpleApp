@@ -32,7 +32,7 @@ def add_new_record_into_all_tables(
 
     new_order = (
         session.query(Orders)
-            .filter(Orders.opator_id == operator_id)
+            .filter(Orders.operator_id == operator_id)
             .filter(Orders.order_name == order_name)
             .filter(Orders.project_name == project_name)
             .one_or_none()
@@ -102,7 +102,7 @@ def create_new_order(operator_id, order_name, project_name, comment=None):
     # session.commit()
     new_order = (
         session.query(Orders)
-            .filter(Orders.opator_id == operator_id)
+            .filter(Orders.operator_id == operator_id)
             .filter(Orders.order_name == order_name)
             .filter(Orders.project_name == project_name)
             .one_or_none()

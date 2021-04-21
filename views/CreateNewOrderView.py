@@ -1,14 +1,15 @@
 import wx
 import constants as con
-from controllers.CreateNewOrderController import CreateNewOrderController
+
+from pubsub import pub
 
 
 class CreateNewOrderView(wx.Frame):
 
     def __init__(self, parent, id):
-        wx.Frame.__init__(self, parent, id, size=(1000, 440))
+        wx.Frame.__init__(self, parent, id, size=(500, 440))
         wx.Frame.CenterOnScreen(self)
-        self.create_new_order_controller = CreateNewOrderController()
+
 
         self.InitUI()
         self.Centre()
@@ -20,36 +21,21 @@ class CreateNewOrderView(wx.Frame):
         '''
 
         vbox = wx.BoxSizer(wx.VERTICAL)
-        # hbox = wx.BoxSizer(wx.HORIZONTAL)
         fgs = wx.FlexGridSizer(9, 2, 9, 20)
 
         order_number = wx.StaticText(panel, label='Numer zamówienia')
         name_of_project = wx.StaticText(panel, label='Nazwa projektu')
-        name_of_drowing = wx.StaticText(panel, label='Numer rysunku')
-        index_of_material = wx.StaticText(panel, label='Index materialu')
-        typy_of_detal = wx.StaticText(panel, label='Typ wyrobu')
         comments = wx.StaticText(panel, label='Uwagi')
-        date_of_adding_recort = wx.StaticText(panel, label='Data opracowania')
-        name_of_operator = wx.StaticText(panel, label='Operator opracował')
+        self.tc1 = wx.TextCtrl(panel)
 
-        tc1 = wx.TextCtrl(panel)
-        tc2 = wx.TextCtrl(panel)
-        tc3 = wx.TextCtrl(panel)
-        tc4 = wx.TextCtrl(panel)
-        tc5 = wx.TextCtrl(panel)
-        tc6 = wx.TextCtrl(panel)
-        tc7 = wx.TextCtrl(panel)
-        tc8 = wx.TextCtrl(panel)
+        self.tc4 = wx.TextCtrl(panel)
 
-        fgs.AddMany([order_number, (tc4, 1, wx.EXPAND),
-                     name_of_project, (tc1, 1, wx.EXPAND),
-                     name_of_drowing, (tc2, 1, wx.EXPAND),
-                     index_of_material, (tc3, 1, wx.EXPAND),
-                     typy_of_detal, (tc5, 1, wx.EXPAND),
-                     comments, (tc6, 1, wx.EXPAND),
-                     date_of_adding_recort, (tc7, 1, wx.EXPAND),
-                     name_of_operator, (tc8, 1, wx.EXPAND),
+        self.tc6 = wx.TextCtrl(panel)
 
+
+        fgs.AddMany([order_number, (self.tc4, 1, wx.EXPAND),
+                     name_of_project, (self.tc1, 1, wx.EXPAND),
+                     comments, (self.tc6, 1, wx.EXPAND),
                      ])
 
         fgs.AddGrowableRow(2, 1)
@@ -61,7 +47,7 @@ class CreateNewOrderView(wx.Frame):
         '''
 
         hbox5 = wx.BoxSizer(wx.HORIZONTAL)
-        create_new_record_button = wx.Button(panel, label='Create', size=(70, 30))
+        create_new_record_button = wx.Button(panel, con.ID_CREATE_NEW_FILE, label='Create', size=(70, 30))
         hbox5.Add(create_new_record_button)
         cancel_button = wx.Button(panel, wx.ID_CLOSE, label='Close', size=(70, 30))
         hbox5.Add(cancel_button, flag=wx.LEFT | wx.BOTTOM, border=5)
@@ -73,11 +59,20 @@ class CreateNewOrderView(wx.Frame):
         # ------------> BINDING <------------------
         '''
 
-        #self.Bind(wx.EVT_BUTTON, create_new_record_button, self.AddNewRecord, id=con.ID_CREATE_NEW_FILE)
+        self.Bind(wx.EVT_BUTTON, self.AddNewRecord, create_new_record_button)
         self.Bind(wx.EVT_BUTTON, self.OnDestroyNewWindow, cancel_button)
 
     def OnDestroyNewWindow(self, e):
         self.Destroy()
 
     def AddNewRecord(self, e):
-        pass
+        new_order = []
+        for x in (self.tc1.GetValue(), self.tc4.GetValue(), self.tc6.GetValue()):
+            new_order.append(x)
+        pub.sendMessage("add_new_order", arg=new_order)
+        self.tc1.Clear()
+        self.tc6.Clear()
+        self.tc4.Clear()
+        wx.MessageBox('New Order Added', 'Info',
+                      wx.OK | wx.ICON_INFORMATION)
+        self.OnDestroyNewWindow(self)
