@@ -3,15 +3,6 @@ from ObjectListView import ObjectListView, ColumnDefn
 from controllers.OrdersTableController import OrdersTableController
 from pubsub import pub
 
-menu_titles = [ "Open Order Detail",
-                "Change Order",
-                "Delete"
-                ]
-
-menu_title_by_id = {}
-for title in menu_titles:
-    menu_title_by_id[ wx.NewId() ] = title
-
 class OrdersTableView(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self,parent)
@@ -47,16 +38,8 @@ class OrdersTableView(wx.Panel):
         mainSizer.Add(btnSizer, 0, wx.CENTER)
         self.SetSizer(mainSizer)
 
-        self.orders_list_ovl.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.RightClick)
+        self.orders_list_ovl.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
 
-    menu_titles = ["Open Order Detail",
-                   "Change Order",
-                   "Delete"
-                   ]
-
-    menu_title_by_id = {}
-    for title in menu_titles:
-        menu_title_by_id[wx.NewId()] = title
 
     def set_orders(self):
         self.orders_list_ovl.SetColumns([
@@ -81,25 +64,35 @@ class OrdersTableView(wx.Panel):
         self.all_orders = self.orders_controller.get_all_orders()
         self.set_orders()
 
-    def RightClick(self, event):
-        # record what was clicked
+    def OnContextMenu(self, event):
         self.list_item_clicked = self.orders_list_ovl.GetSelectedObject()
+        self.popupID1 = wx.NewId()
+        self.popupID2 = wx.NewId()
+        self.popupID3 = wx.NewId()
 
+
+        self.Bind(wx.EVT_MENU, self.OnPopupOne, id=self.popupID1)
+        self.Bind(wx.EVT_MENU, self.OnPopupTwo, id=self.popupID2)
+        self.Bind(wx.EVT_MENU, self.OnDeleteOrder, id=self.popupID3)
+        # make a menu
         menu = wx.Menu()
-        menu.Bind(wx.EVT_MENU, self.MenuSelectionCb)
+        # Show how to put an icon in the menu
+        item = wx.MenuItem(menu, self.popupID1, "Open Orders Detail")
+        item2 = wx.MenuItem(menu, self.popupID2, "Edit Order")
+        item3 = wx.MenuItem(menu, self.popupID3, "Delete Order")
+        menu.Append(item)
+        menu.Append(item2)
+        menu.Append(item3)
+        menu.Destroy()
 
-        for (id_, title) in menu_title_by_id.items():
-            ### 3. Launcher packs menu with Append. ###
-            menu.Append(id_, title)
+    def OnPopupOne(self, event):
+        print("One")
 
-        ### 5. Launcher displays menu with call to PopupMenu, invoked on the source component, passing event's GetPoint. ###
-        # self.frame.PopupMenu( menu, event.GetPoint() )
-        self.PopupMenu(menu, event.GetPoint())
-        menu.Destroy()  # destroy to avoid mem leak
+    def OnPopupTwo(self, event):
+        print("two")
 
-    def MenuSelectionCb(self, event):
-        # do something
-        operation = menu_title_by_id[event.GetId()]
-        target = self.list_item_clicked.order_id
-        print('Perform "%(operation)s" on "%(target)s."' % vars())
-
+    def OnDeleteOrder(self, event):
+        target = self.list_item_clicked
+        id = self.orders_list_ovl.GetIndexOf(target)
+        self.orders_list_ovl.DeleteItem(id)
+        self.orders_controller.delete_order(target)

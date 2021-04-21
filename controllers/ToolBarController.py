@@ -18,9 +18,10 @@ class ToolbarController:
         create_window.Show()
 
     def FindFile(self, e):
-        table_view = OrdersPanel(parent=None)
+        table_view = OrdersTableView(parent=None)
         table_view.Show()
 
     def AddNewUser(self, e):
         add_new_user = AddNewOperator(None, id=con.ID_ADD_NEW_USER)
         add_new_user.Show()
+

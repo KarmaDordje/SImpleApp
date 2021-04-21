@@ -31,7 +31,8 @@ class OrdersRepository(IOrdersRepository):
 
 
     def delete(self, order: Orders) -> None:
-        self.session.delete(order)
+        del_object = self.session.query(Orders).filter(Orders.order_id == order.order_id).one()
+        self.session.delete(del_object)
         self.session.commit()
         self.session.close()
 

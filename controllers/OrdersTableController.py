@@ -6,8 +6,6 @@ class OrdersTableController:
     def __init__(self):
         self.model = Model()
 
-
-
     def convertResults(self, results):
         """
         Convert results to OlvBook objects
@@ -27,8 +25,6 @@ class OrdersTableController:
 
         return all_orders
 
-
-
     def get_all_orders(self):
         #results = self.model.orders_repo.get_orders_by_operator()
         results = self.model.orders_repo.find_all()
@@ -39,6 +35,8 @@ class OrdersTableController:
     def updete(self, e):
         self.get_all_orders()
 
+    def delete_order(self, order):
+        self.model.delete_order(order)
 
     def test(self):
         print("Its work")

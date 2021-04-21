@@ -11,8 +11,6 @@ class Model:
         self.operator = Operator()
         self.order = Orders()
 
-
-
     def add_new_user(self, operator:Operator):
         self.operator_repo.save(operator)
 
@@ -25,3 +23,6 @@ class Model:
 
     def create_new_order(self, order:Orders):
         self.orders_repo.save(order)
+
+    def delete_order(self, order:Orders):
+        self.orders_repo.delete(order)
