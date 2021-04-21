@@ -83,6 +83,8 @@ class OrdersTableView(wx.Panel):
         menu.Append(item)
         menu.Append(item2)
         menu.Append(item3)
+
+        self.PopupMenu(menu)
         menu.Destroy()
 
     def OnPopupOne(self, event):
@@ -93,6 +95,6 @@ class OrdersTableView(wx.Panel):
 
     def OnDeleteOrder(self, event):
         target = self.list_item_clicked
-        id = self.orders_list_ovl.GetIndexOf(target)
-        self.orders_list_ovl.DeleteItem(id)
+        row_index = self.orders_list_ovl.GetIndexOf(target)
+        self.orders_list_ovl.DeleteItem(row_index)
         self.orders_controller.delete_order(target)
